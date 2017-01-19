@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+    mysql-multiauth:
+        image: ambientum/mysql:5.7
+        container_name: mysql-multiauth
+        volumes:
+          - ./mysql:/var/lib/mysql
+        ports:
+          - "3306:3306"
+        environment:
+          - MYSQL_ROOT_PASSWORD=multiauth
+          - MYSQL_DATABASE=multiauth
+          - MYSQL_USER=multiauth
+          - MYSQL_PASSWORD=multiauth
+
+    app-multiauth:
+        image: ambientum/php:7.0-caddy
+        container_name: app-multiauth
+        volumes:
+          - .:/var/www/app
+        ports:
+          - "80:8080"
+        links:
+          - mysql-multiauth
+
+    phpmyadmin-multiauth:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin-multiauth
+        links:
+          - mysql-multiauth:db
+        ports:
+          - 8080:80
